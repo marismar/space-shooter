@@ -1,4 +1,4 @@
-# flameengine
+# Space shooter
 
 A new Flutter project.
 
