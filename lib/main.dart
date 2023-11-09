@@ -5,7 +5,7 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
-class SpaceShooterGame extends FlameGame with PanDetector {
+class SpaceShooterGame extends FlameGame with PanDetector, TapDetector {
   late Player player;
 
   @override
@@ -21,6 +21,38 @@ class SpaceShooterGame extends FlameGame with PanDetector {
   @override
   void onPanUpdate(DragUpdateInfo info) {
     player.move(info.delta.global);
+  }
+
+  @override
+  void onTapDown(TapDownInfo info) {
+    super.onTapDown(info);
+
+    add(Bullet(position: player.position));
+  }
+}
+
+class Bullet extends SpriteComponent with HasGameRef<SpaceShooterGame> {
+  static const _speed = 450;
+
+  Bullet({required super.position});
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    sprite = await gameRef.loadSprite('bullet.png');
+    width = 25;
+    height = 25;
+    anchor = Anchor.center;
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    position.y -= _speed * dt;
+
+    if (position.y < 0) {
+      gameRef.remove(this);
+    }
   }
 }
 
@@ -38,7 +70,7 @@ class EnemyManager extends TimerComponent with HasGameRef<SpaceShooterGame> {
 
   void _spawnEnemy() {
     final enemy = Enemy(
-      initialPosition: Vector2(_random.nextDouble() * gameRef.size.x, 0),
+      position: Vector2(_random.nextDouble() * gameRef.size.x, 0),
     );
 
     gameRef.add(enemy);
@@ -47,16 +79,14 @@ class EnemyManager extends TimerComponent with HasGameRef<SpaceShooterGame> {
 
 class Enemy extends SpriteComponent with HasGameRef<SpaceShooterGame> {
   static const _speed = 250;
-  final Vector2 initialPosition;
 
-  Enemy({required this.initialPosition});
+  Enemy({required super.position});
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
 
     sprite = await gameRef.loadSprite('enemy.png');
-    position = initialPosition;
     width = 50;
     height = 50;
     anchor = Anchor.center;
@@ -79,7 +109,7 @@ class Player extends SpriteComponent with HasGameRef<SpaceShooterGame> {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    sprite = await gameRef.loadSprite('space_shooter_player.png');
+    sprite = await gameRef.loadSprite('player.png');
     position = Vector2(gameRef.size.x / 2, gameRef.size.y - 100);
     width = 50;
     height = 50;
