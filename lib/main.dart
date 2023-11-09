@@ -29,6 +29,22 @@ class SpaceShooterGame extends FlameGame with PanDetector, TapDetector {
 
     add(Bullet(position: player.position));
   }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    final bullets = children.whereType<Bullet>();
+    for (final enemy in children.whereType<Enemy>()) {
+      for (final bullet in bullets) {
+        if (enemy.containsPoint(bullet.absoluteCenter)) {
+          remove(enemy);
+          remove(bullet);
+          break;
+        }
+      }
+    }
+  }
 }
 
 class Bullet extends SpriteComponent with HasGameRef<SpaceShooterGame> {
