@@ -1,7 +1,7 @@
-import 'package:flame/events.dart';
-import 'package:flutter/material.dart';
-import 'package:flame/game.dart';
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
+import 'package:flame/game.dart';
+import 'package:flutter/material.dart';
 
 class SpaceShooterGame extends FlameGame with PanDetector {
   late Player player;
@@ -26,10 +26,10 @@ class Player extends SpriteComponent with HasGameRef<SpaceShooterGame> {
     await super.onLoad();
 
     sprite = await gameRef.loadSprite('space_shooter_player.png');
-    position = size / 2;
+    position = Vector2(gameRef.size.x / 2, gameRef.size.y - 100);
     width = 50;
     height = 50;
-    anchor = Anchor.center;
+    anchor = Anchor.bottomCenter;
   }
 
   void move(Vector2 delta) {
