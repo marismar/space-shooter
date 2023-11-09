@@ -21,3 +21,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/space_shooter_player.png
+    - assets/images/enemy.png
